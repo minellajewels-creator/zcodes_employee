@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAPZCODES — My Reimbursements</title>
+<link rel="icon" href="favicon.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <span>
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M3 9L9 3L15 9L9 15L3 9Z" fill="#0a0a0f"/></svg>
+      </span>
+      SAPZCODES
+    </div>
+  </div>
+  <div class="sidebar-label">My Space</div>
+  <a class="nav-item" href="emp-portal.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    My Payslips
+  </a>
+  <a class="nav-item" href="emp-portal.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    Offer Letter
+  </a>
+  <a class="nav-item" href="declarations.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tax Declarations
+  </a>
+  <a class="nav-item active" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Reimbursements
+  </a>
+  <div class="sidebar-footer">
+    <div class="emp-card">
+      <div class="emp-avatar" id="sidebarAvatar">--</div>
+      <div class="emp-info">
+        <div class="emp-name" id="sidebarName">—</div>
+        <div class="emp-id-label" id="sidebarId">—</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <div>
+      <h1>Reimbursements</h1>
+      <p>Submit expense claims and track their approval status</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Claimed</div>
+      <div class="stat-value" id="statClaimed">₹0</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Approved</div>
+      <div class="stat-value" id="statApproved" style="color:var(--success)">₹0</div>
+      <div class="stat-sub">Approved amount</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" id="statPending" style="color:var(--warning)">0</div>
+      <div class="stat-sub">Awaiting approval</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" id="statRejected" style="color:var(--error)">0</div>
+      <div class="stat-sub">Total rejected</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Left: history -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <h3>My Claims</h3>
+        <select id="statusFilter" onchange="renderTable()" style="padding:6px 12px;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--muted);outline:none;">
+          <option value="">All Status</option>
+          <option value="PENDING">Pending</option>
+          <option value="APPROVED">Approved</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Month</th>
+            <th>Claimed</th>
+            <th>Approved</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="reimTable">
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Right: submit form -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h3>Submit New Claim</h3>
+      </div>
+      <div class="form-card-body">
+        <!-- Category select pills -->
+        <div class="form-group" style="margin-bottom:8px;">
+          <label>Expense Category</label>
+        </div>
+        <div class="cat-grid" id="catGrid">
+          <div class="cat-pill" onclick="selectCat(this,'Travel')"><span class="icon">✈</span> Travel</div>
+          <div class="cat-pill" onclick="selectCat(this,'Food')"><span class="icon">🍽</span> Food</div>
+          <div class="cat-pill" onclick="selectCat(this,'Medical')"><span class="icon">🏥</span> Medical</div>
+          <div class="cat-pill" onclick="selectCat(this,'Internet')"><span class="icon">🌐</span> Internet</div>
+          <div class="cat-pill" onclick="selectCat(this,'Equipment')"><span class="icon">💻</span> Equipment</div>
+          <div class="cat-pill" onclick="selectCat(this,'Other')"><span class="icon">📦</span> Other</div>
+        </div>
+        <input type="hidden" id="selectedCat" />
+
+        <div class="field-row" style="margin-bottom:14px;">
+          <div class="form-group" style="margin-bottom:0">
+            <label>Month</label>
+            <select id="claimMonth">
+              <option value="1">January</option><option value="2">February</option>
+              <option value="3">March</option><option value="4">April</option>
+              <option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option>
+              <option value="9">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Year</label>
+            <input type="number" id="claimYear" placeholder="2025" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Amount Claimed</label>
+          <div class="input-rupee"><input type="number" id="claimAmount" placeholder="0.00" /></div>
+        </div>
+
+        <div class="form-group">
+          <label>Description / Purpose</label>
+          <textarea id="claimDesc" placeholder="Briefly describe the expense..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Supporting Bill / Receipt</label>
+          <div class="upload-zone" id="uploadZone"
+               ondragover="event.preventDefault();this.classList.add('drag-over')"
+               ondragleave="this.classList.remove('drag-over')"
+               ondrop="handleDrop(event)"
+               onclick="document.getElementById('fileInput').click()">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>Drag & drop bill here</p>
+            <span>or browse to upload</span>
+          </div>
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this.files[0])"/>
+          <div id="filePill" style="display:none" class="file-pill">
+            <span>📎</span>
+            <span id="fileName">file.pdf</span>
+            <button onclick="clearFile()">✕</button>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin-top:6px">PDF, JPG, PNG — max 5MB. (Note: file is noted; actual upload needs Drive integration.)</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="submitClaim()">Submit Claim</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzdjsklfEPMmA17LcHknasvTCpTztAcqEwBdu3FCD5zi1kpAmNMKyMmaMVbYvz3S8RJ/exec";
+  const months  = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+  const empId   = sessionStorage.getItem('emp_id');
+  const empName = sessionStorage.getItem('emp_name');
+  if (!empId) window.location.href = 'emp-login.html';
+
+  document.getElementById('sidebarName').textContent = empName || '—';
+  document.getElementById('sidebarId').textContent   = empId   || '—';
+  const initials = (empName||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = initials;
+
+  // Default month/year
+  const now = new Date();
+  document.getElementById('claimMonth').value = now.getMonth() + 1;
+  document.getElementById('claimYear').value  = now.getFullYear();
+
+  let allData = [];
+  let selectedFile = null;
+
+  function selectCat(el, cat) {
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('selectedCat').value = cat;
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    selectedFile = file;
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('filePill').style.display = 'flex';
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePill').style.display = 'none';
+  }
+
+  async function loadData() {
+    try {
+      const res  = await fetch(`${API_URL}?action=getMyReimbursements&empId=${empId}&password=${encodeURIComponent(sessionStorage.getItem('emp_pass') || '')}`);
+      const data = await res.json();
+      allData = Array.isArray(data) ? data : [];
+      computeStats();
+      renderTable();
+    } catch {
+      document.getElementById('reimTable').innerHTML =
+        '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px">Could not load data. Check API URL.</td></tr>';
+    }
+  }
+
+  function computeStats() {
+    const claimed  = allData.reduce((s, r) => s + Number(r.AMOUNT_CLAIMED || 0), 0);
+    const approved = allData.filter(r => r.STATUS === 'APPROVED').reduce((s, r) => s + Number(r.AMOUNT_APPROVED || 0), 0);
+    const pending  = allData.filter(r => r.STATUS === 'PENDING').length;
+    const rejected = allData.filter(r => r.STATUS === 'REJECTED').length;
+
+    document.getElementById('statClaimed').textContent  = fmt(claimed);
+    document.getElementById('statApproved').textContent = fmt(approved);
+    document.getElementById('statPending').textContent  = pending;
+    document.getElementById('statRejected').textContent = rejected;
+  }
+
+  function renderTable() {
+    const filter = document.getElementById('statusFilter').value;
+    const filtered = filter ? allData.filter(r => r.STATUS === filter) : allData;
+    const tbody = document.getElementById('reimTable');
+
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:40px">No reimbursements found.</td></tr>';
+      return;
+    }
+
+    const sorted = [...filtered].sort((a,b) => new Date(b.SUBMITTED_ON||0) - new Date(a.SUBMITTED_ON||0));
+    tbody.innerHTML = sorted.map(r => {
+      const badge = r.STATUS === 'APPROVED' ? 'badge-green'
+                  : r.STATUS === 'REJECTED' ? 'badge-red' : 'badge-yellow';
+      return `
+        <tr>
+          <td>
+            <div style="font-weight:500;color:var(--text)">${r.CATEGORY || '—'}</div>
+            <div style="font-size:11px;color:var(--muted)">${r.SUBMITTED_ON || ''}</div>
+          </td>
+          <td>${months[r.MONTH] || r.MONTH} ${r.YEAR}</td>
+          <td>${fmt(r.AMOUNT_CLAIMED)}</td>
+          <td style="color:var(--success)">${r.AMOUNT_APPROVED ? fmt(r.AMOUNT_APPROVED) : '—'}</td>
+          <td><span class="badge ${badge}">${r.STATUS || 'PENDING'}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function submitClaim() {
+    const cat    = document.getElementById('selectedCat').value;
+    const month  = document.getElementById('claimMonth').value;
+    const year   = document.getElementById('claimYear').value;
+    const amount = document.getElementById('claimAmount').value;
+    const desc   = document.getElementById('claimDesc').value;
+
+    if (!cat)    { showToast('Please select a category.', 'error'); return; }
+    if (!amount || Number(amount) <= 0) { showToast('Please enter a valid amount.', 'error'); return; }
+    if (!desc.trim()) { showToast('Please add a description.', 'error'); return; }
+
+    const reimbId = 'RI' + Date.now();
+    const payload = {
+      action: 'submitReimbursement',
+      token:  sessionStorage.getItem('emp_pass') || '',
+      data: {
+        REIMB_ID:       reimbId,
+        EMP_ID:         empId,
+        MONTH:          month,
+        YEAR:           year,
+        CATEGORY:       cat,
+        AMOUNT_CLAIMED: Number(amount),
+        AMOUNT_APPROVED:'',
+        STATUS:         'PENDING',
+        SUBMITTED_ON:   new Date().toLocaleDateString('en-IN'),
+        APPROVED_ON:    ''
+      }
+    };
+
+    try {
+      const res  = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data.success !== false) {
+        showToast('Claim submitted! HR will review it shortly.', 'success');
+        document.getElementById('claimAmount').value = '';
+        document.getElementById('claimDesc').value   = '';
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('selected'));
+        document.getElementById('selectedCat').value = '';
+        clearFile();
+        loadData();
+      } else {
+        showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
+      }
+    } catch {
+      showToast('Connection error. Please try again.', 'error');
+    }
+  }
+
+  function logout() { sessionStorage.clear(); window.location.href = 'emp-login.html'; }
+
+  function fmt(val) {
+    const n = Number(val) || 0;
+    return '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✓ ' : '✕ ') + msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  loadData();
+</script>
+</body>
+</html>

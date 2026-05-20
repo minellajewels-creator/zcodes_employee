@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAPZCODES — Tax Declarations</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<link rel="icon" href="favicon.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <span>
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M3 9L9 3L15 9L9 15L3 9Z" fill="#0a0a0f"/></svg>
+      </span>
+      SAPZCODES
+    </div>
+  </div>
+  <div class="sidebar-label">My Space</div>
+  <a class="nav-item" href="emp-portal.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    My Payslips
+  </a>
+  <a class="nav-item" href="emp-portal.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    Offer Letter
+  </a>
+  <a class="nav-item active" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tax Declarations
+  </a>
+  <a class="nav-item" href="emp-reimbursements.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Reimbursements
+  </a>
+  <div class="sidebar-footer">
+    <div class="emp-card">
+      <div class="emp-avatar" id="sidebarAvatar">--</div>
+      <div class="emp-info">
+        <div class="emp-name" id="sidebarName">—</div>
+        <div class="emp-id-label" id="sidebarId">—</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <h1>Tax Declarations</h1>
+    <p>Submit your investment proofs and deductions for TDS computation</p>
+  </div>
+
+  <!-- FY progress -->
+  <div class="fy-bar">
+    <div class="fy-bar-left">
+      <h3>Financial Year <span id="fyLabel">—</span></h3>
+      <p>Declarations submitted here are used for TDS calculation</p>
+    </div>
+    <div class="fy-progress">
+      <div class="fy-progress-label">
+        <span>FY Progress</span><span id="fyPercent">—%</span>
+      </div>
+      <div class="fy-progress-bar"><div class="fy-progress-fill" id="fyFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="decl-grid">
+    <!-- Form -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Investment Declaration Form</h3>
+        <span style="font-size:12px;color:var(--muted)" id="fySubLabel">FY —</span>
+      </div>
+      <div class="card-body">
+
+        <div class="section-group">
+          <div class="section-label">Section 80C — Max ₹1,50,000</div>
+          <div class="field-row">
+            <div class="form-group">
+              <label>Life Insurance Premium</label>
+              <div class="input-rupee"><input type="number" id="lic" placeholder="0" oninput="recalc()" /></div>
+            </div>
+            <div class="form-group">
+              <label>PPF Contribution</label>
+              <div class="input-rupee"><input type="number" id="ppf" placeholder="0" oninput="recalc()" /></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="form-group">
+              <label>ELSS Mutual Funds</label>
+              <div class="input-rupee"><input type="number" id="elss" placeholder="0" oninput="recalc()" /></div>
+            </div>
+            <div class="form-group">
+              <label>Tuition Fees (Children)</label>
+              <div class="input-rupee"><input type="number" id="tuition" placeholder="0" oninput="recalc()" /></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="form-group">
+              <label>Home Loan Principal</label>
+              <div class="input-rupee"><input type="number" id="homeLoan" placeholder="0" oninput="recalc()" /></div>
+            </div>
+            <div class="form-group">
+              <label>EPF / PF (Own contrib.)</label>
+              <div class="input-rupee"><input type="number" id="epf" placeholder="0" oninput="recalc()" /></div>
+            </div>
+          </div>
+          <div class="limit-bar">
+            <div class="limit-bar-header"><span>80C Used</span><span id="c80cUsed">₹0 / ₹1,50,000</span></div>
+            <div class="limit-bar-track"><div class="limit-bar-fill limit-ok" id="c80cBar" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="section-group">
+          <div class="section-label">HRA Exemption</div>
+          <div class="field-row">
+            <div class="form-group">
+              <label>Annual Rent Paid</label>
+              <div class="input-rupee"><input type="number" id="rentPaid" placeholder="0" oninput="recalc()" /></div>
+              <span class="field-hint">Declare 0 if no HRA claim</span>
+            </div>
+            <div class="form-group">
+              <label>City Type</label>
+              <select id="cityType" onchange="recalc()">
+                <option value="non-metro">Non-Metro (40%)</option>
+                <option value="metro">Metro City (50%)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-group">
+          <div class="section-label">Section 80D — Health Insurance</div>
+          <div class="field-row">
+            <div class="form-group">
+              <label>Self &amp; Family Premium</label>
+              <div class="input-rupee"><input type="number" id="health80d" placeholder="0" oninput="recalc()" /></div>
+              <span class="field-hint">Max ₹25,000 (non-senior)</span>
+            </div>
+            <div class="form-group">
+              <label>Parent's Premium</label>
+              <div class="input-rupee"><input type="number" id="parent80d" placeholder="0" oninput="recalc()" /></div>
+              <span class="field-hint">Max ₹25,000 (₹50,000 senior)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-group">
+          <div class="section-label">Other Deductions</div>
+          <div class="field-row">
+            <div class="form-group">
+              <label>80E — Education Loan Interest</label>
+              <div class="input-rupee"><input type="number" id="edu80e" placeholder="0" oninput="recalc()" /></div>
+            </div>
+            <div class="form-group">
+              <label>80G — Donations</label>
+              <div class="input-rupee"><input type="number" id="donation80g" placeholder="0" oninput="recalc()" /></div>
+            </div>
+          </div>
+          <div class="field-row single">
+            <div class="form-group">
+              <label>NPS Contribution (80CCD1B — Max ₹50,000)</label>
+              <div class="input-rupee"><input type="number" id="nps" placeholder="0" oninput="recalc()" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button class="btn btn-outline" onclick="resetForm()">Reset</button>
+          <button class="btn btn-primary" onclick="submitDeclaration()">Submit Declaration</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary sidebar -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="card">
+        <div class="card-header"><h3>Summary</h3></div>
+        <div class="card-body" style="padding:18px 20px;">
+          <div class="summary-item"><span class="s-label">Sec 80C</span><span class="s-val" id="sum80c">₹0</span></div>
+          <div class="summary-item"><span class="s-label">HRA Exemption</span><span class="s-val" id="sumHRA">₹0</span></div>
+          <div class="summary-item"><span class="s-label">Sec 80D</span><span class="s-val" id="sum80d">₹0</span></div>
+          <div class="summary-item"><span class="s-label">80E + 80G</span><span class="s-val" id="sumOther">₹0</span></div>
+          <div class="summary-item"><span class="s-label">NPS (80CCD1B)</span><span class="s-val" id="sumNPS">₹0</span></div>
+          <div class="summary-item"><span class="s-label">Std. Deduction</span><span class="s-val">₹50,000</span></div>
+          <div class="summary-total">
+            <span class="t-label">Total Deductions</span>
+            <span class="t-val" id="sumTotal">₹50,000</span>
+          </div>
+          <div class="tax-estimate-box" style="margin-top:16px;">
+            <h4>Estimated Tax Impact</h4>
+            <div class="tax-row"><span>Your Gross (Annual)</span><span class="tval" id="taxGross">—</span></div>
+            <div class="tax-row"><span>Less: All Deductions</span><span class="tval" id="taxDeductions">—</span></div>
+            <div class="tax-row"><span>Taxable Income</span><span class="tval" id="taxable">—</span></div>
+            <div class="tax-row" style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(124,106,247,0.2)">
+              <span style="color:var(--text)">Est. Monthly TDS</span>
+              <span class="tval" style="color:var(--accent);font-weight:700;" id="taxMonthly">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Past Submissions</h3></div>
+        <table>
+          <thead><tr><th>FY</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody id="historyTable">
+            <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:24px">No past submissions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzdjsklfEPMmA17LcHknasvTCpTztAcqEwBdu3FCD5zi1kpAmNMKyMmaMVbYvz3S8RJ/exec";
+  const empId   = sessionStorage.getItem('emp_id');
+  const empName = sessionStorage.getItem('emp_name');
+  if (!empId) window.location.href = 'emp-login.html';
+
+  document.getElementById('sidebarName').textContent = empName || '—';
+  document.getElementById('sidebarId').textContent   = empId   || '—';
+  const initials = (empName||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = initials;
+
+  // FY info
+  const now = new Date();
+  const fyStart = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+  const fyEnd   = fyStart + 1;
+  const fyLabel = `${fyStart}-${String(fyEnd).slice(-2)}`;
+  document.getElementById('fyLabel').textContent   = fyLabel;
+  document.getElementById('fySubLabel').textContent= `FY ${fyLabel}`;
+  const fyStartDate  = new Date(fyStart, 3, 1);
+  const fyEndDate    = new Date(fyEnd, 2, 31);
+  const fyPct = Math.min(100, Math.round(((now - fyStartDate) / (fyEndDate - fyStartDate)) * 100));
+  document.getElementById('fyPercent').textContent = fyPct + '%';
+  document.getElementById('fyFill').style.width    = fyPct + '%';
+
+  // Employee gross from session (stored during login or loaded fresh)
+  let annualGross = Number(sessionStorage.getItem('emp_gross') || 0) * 12;
+
+  function gv(id) { return Number(document.getElementById(id).value) || 0; }
+  function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  function recalc() {
+    // 80C
+    const c80c = Math.min(gv('lic') + gv('ppf') + gv('elss') + gv('tuition') + gv('homeLoan') + gv('epf'), 150000);
+    const c80cRaw = gv('lic') + gv('ppf') + gv('elss') + gv('tuition') + gv('homeLoan') + gv('epf');
+    const c80cPct = Math.min(100, Math.round((c80cRaw / 150000) * 100));
+    document.getElementById('c80cUsed').textContent = fmt(Math.min(c80cRaw, 150000)) + ' / ₹1,50,000';
+    const bar = document.getElementById('c80cBar');
+    bar.style.width = c80cPct + '%';
+    bar.className = 'limit-bar-fill ' + (c80cPct >= 100 ? 'limit-over' : c80cPct >= 80 ? 'limit-warn' : 'limit-ok');
+
+    // HRA
+    const rent = gv('rentPaid');
+    const isMetro = document.getElementById('cityType').value === 'metro';
+    // Simple HRA exemption: least of (actual HRA, rent-10%basic, 40/50% basic)
+    // We store the rent paid as declared; backend does final computation
+    const hraExemp = rent > 0 ? rent : 0;
+
+    // 80D
+    const d80d = Math.min(gv('health80d'), 25000) + Math.min(gv('parent80d'), 50000);
+
+    // Others
+    const others = gv('edu80e') + gv('donation80g');
+    const nps    = Math.min(gv('nps'), 50000);
+    const std    = 50000;
+
+    const total = c80c + hraExemp + d80d + others + nps + std;
+
+    document.getElementById('sum80c').textContent  = fmt(c80c);
+    document.getElementById('sumHRA').textContent  = fmt(hraExemp);
+    document.getElementById('sum80d').textContent  = fmt(d80d);
+    document.getElementById('sumOther').textContent= fmt(others);
+    document.getElementById('sumNPS').textContent  = fmt(nps);
+    document.getElementById('sumTotal').textContent= fmt(total);
+
+    // TDS estimate
+    if (annualGross > 0) {
+      const taxable  = Math.max(0, annualGross - total);
+      const tdsAnnual= calcTDS(taxable);
+      const tdsMonthly = tdsAnnual / 12;
+      document.getElementById('taxGross').textContent      = fmt(annualGross);
+      document.getElementById('taxDeductions').textContent = fmt(total);
+      document.getElementById('taxable').textContent       = fmt(taxable);
+      document.getElementById('taxMonthly').textContent    = fmt(tdsMonthly) + '/mo';
+    } else {
+      document.getElementById('taxGross').textContent      = 'Not available';
+      document.getElementById('taxDeductions').textContent = fmt(total);
+      document.getElementById('taxable').textContent       = '—';
+      document.getElementById('taxMonthly').textContent    = '—';
+    }
+  }
+
+  function calcTDS(taxable) {
+    if (taxable <= 300000) return 0;
+    if (taxable <= 700000) return (taxable - 300000) * 0.05;
+    if (taxable <= 1000000) return 20000 + (taxable - 700000) * 0.10;
+    if (taxable <= 1200000) return 50000 + (taxable - 1000000) * 0.15;
+    if (taxable <= 1500000) return 80000 + (taxable - 1200000) * 0.20;
+    return 140000 + (taxable - 1500000) * 0.30;
+  }
+
+  async function submitDeclaration() {
+    const c80c   = gv('lic') + gv('ppf') + gv('elss') + gv('tuition') + gv('homeLoan') + gv('epf');
+    const hraExemp = gv('rentPaid');
+    const d80d   = gv('health80d') + gv('parent80d');
+    const others = gv('edu80e') + gv('donation80g') + gv('nps');
+    const total  = Math.min(c80c, 150000) + hraExemp + Math.min(d80d, 75000) + others;
+
+    const payload = {
+      action: 'submitDeclaration',
+      token:  sessionStorage.getItem('emp_pass') || '',
+      data: {
+        EMP_ID:           empId,
+        FINANCIAL_YEAR:   fyLabel,
+        SECTION_80C:      Math.min(c80c, 150000),
+        HRA_EXEMPTION:    hraExemp,
+        OTHER_DEDUCTIONS: others,
+        TOTAL_DECLARED:   total,
+        SUBMITTED_ON:     new Date().toLocaleDateString('en-IN')
+      }
+    };
+
+    try {
+      const res  = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data.success || data.error === undefined) {
+        showToast('Declaration submitted successfully!', 'success');
+        loadHistory();
+      } else {
+        showToast('Submission failed: ' + (data.error || 'Unknown error'), 'error');
+      }
+    } catch {
+      showToast('Connection error. Please try again.', 'error');
+    }
+  }
+
+  async function loadHistory() {
+    try {
+      const res  = await fetch(`${API_URL}?action=getMyDeclarations&empId=${empId}&password=${encodeURIComponent(sessionStorage.getItem('emp_pass') || '')}`);
+      const data = await res.json();
+      const tbody = document.getElementById('historyTable');
+      if (!Array.isArray(data) || !data.length) return;
+      tbody.innerHTML = data.map(d => `
+        <tr>
+          <td>${d.FINANCIAL_YEAR || '—'}</td>
+          <td style="color:var(--accent)">₹${Number(d.TOTAL_DECLARED || 0).toLocaleString('en-IN')}</td>
+          <td><span class="badge badge-green">Submitted</span></td>
+        </tr>
+      `).join('');
+    } catch { /* silent */ }
+  }
+
+  function resetForm() {
+    ['lic','ppf','elss','tuition','homeLoan','epf','rentPaid','health80d','parent80d','edu80e','donation80g','nps'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    recalc();
+  }
+
+  function logout() { sessionStorage.clear(); window.location.href = 'emp-login.html'; }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✓ ' : '✕ ') + msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  recalc();
+  loadHistory();
+</script>
+</body>
+</html>

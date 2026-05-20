@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAPZCODES — My Portal</title>
+<link rel="icon" href="favicon.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <span>
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+          <path d="M3 9L9 3L15 9L9 15L3 9Z" fill="#0a0a0f"/>
+        </svg>
+      </span>
+      SAPZCODES
+    </div>
+  </div>
+
+  <div class="sidebar-label">My Space</div>
+  <a class="nav-item active" onclick="showPage('payslips')" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    My Payslips
+  </a>
+  <a class="nav-item" onclick="showPage('offer')" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    Offer Letter
+  </a>
+  <a class="nav-item" onclick="window.location.href='declarations.html'" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tax Declarations
+  </a>
+  <a class="nav-item" onclick="window.location.href='emp-reimbursements.html'" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Reimbursements
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="emp-card">
+      <div class="emp-avatar" id="sidebarAvatar">--</div>
+      <div class="emp-info">
+        <div class="emp-name" id="sidebarName">Loading...</div>
+        <div class="emp-id-label" id="sidebarId">—</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- PAYSLIPS PAGE -->
+  <div class="page-section active" id="page-payslips">
+    <div class="page-header">
+      <h1>My Payslips</h1>
+      <p>View and download your monthly salary statements</p>
+    </div>
+    <div class="stats-row" id="payslipStats">
+      <div class="stat-card">
+        <div class="stat-label">Latest Net Pay</div>
+        <div class="stat-value" id="statLatestNet">—</div>
+        <div class="stat-sub" id="statLatestMonth">Loading...</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Payslips</div>
+        <div class="stat-value" id="statTotal">—</div>
+        <div class="stat-sub">All time records</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">YTD Earnings</div>
+        <div class="stat-value" id="statYTD">—</div>
+        <div class="stat-sub">This financial year</div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-header">
+        <h3>Payslip History</h3>
+      </div>
+      <div id="payslipLoading" class="loading-bar"><div class="loading-bar-inner"></div></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Month / Year</th>
+            <th>Gross</th>
+            <th>Deductions</th>
+            <th>Net Pay</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="payslipTable">
+          <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">Loading payslips...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- OFFER LETTER PAGE -->
+  <div class="page-section" id="page-offer">
+    <div class="page-header">
+      <h1>Offer Letter</h1>
+      <p>Your original employment offer from SAPZCODES</p>
+    </div>
+    <div class="table-card">
+      <div class="table-card-header">
+        <h3>Employment Offer Letter</h3>
+        <div class="offer-actions">
+          <button class="btn btn-outline" onclick="printOfferLetter()">🖨 Print</button>
+          <button class="btn btn-primary" onclick="downloadOfferLetter()">⬇ Download</button>
+        </div>
+      </div>
+      <div style="padding: 24px;">
+        <div id="offerLoading" class="loading-bar"><div class="loading-bar-inner"></div></div>
+        <div class="offer-letter-view" id="offerContent">Loading your offer letter...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Payslip Detail Modal -->
+<div class="modal-overlay" id="payslipModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Payslip Detail</h3>
+      <button class="modal-close" onclick="closeModal('payslipModal')">✕</button>
+    </div>
+    <div class="modal-body" id="payslipModalBody"></div>
+  </div>
+</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzdjsklfEPMmA17LcHknasvTCpTztAcqEwBdu3FCD5zi1kpAmNMKyMmaMVbYvz3S8RJ/exec";
+  const months  = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  // Auth check
+  const empId   = sessionStorage.getItem('emp_id');
+  const empName = sessionStorage.getItem('emp_name');
+  const empDesig= sessionStorage.getItem('emp_desig');
+  if (!empId) window.location.href = 'emp-login.html';
+
+  // Set sidebar info
+  document.getElementById('sidebarName').textContent = empName || '—';
+  document.getElementById('sidebarId').textContent   = empId   || '—';
+  const initials = (empName || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = initials;
+
+  const password = sessionStorage.getItem('emp_pass') || '';
+
+  function showPage(id) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+
+    if (id === 'offer' && !window._offerLoaded) loadOfferLetter();
+  }
+
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = 'emp-login.html';
+  }
+
+  // ── PAYSLIPS ──────────────────────────────────────
+  let payslipsData = [];
+
+  async function loadPayslips() {
+    try {
+      const res  = await fetch(`${API_URL}?action=getMyPayslips&empId=${empId}&password=${encodeURIComponent(sessionStorage.getItem('emp_pass') || '')}`);
+      const data = await res.json();
+      payslipsData = Array.isArray(data) ? data : [];
+      renderPayslips();
+    } catch {
+      document.getElementById('payslipTable').innerHTML =
+        '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">Could not load payslips. Check API URL.</td></tr>';
+    } finally {
+      document.getElementById('payslipLoading').style.display = 'none';
+    }
+  }
+
+  function renderPayslips() {
+    const tbody = document.getElementById('payslipTable');
+
+    if (!payslipsData.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">No payslips found yet.</td></tr>';
+      return;
+    }
+
+    // Stats
+    const sorted = [...payslipsData].sort((a,b) => b.YEAR - a.YEAR || b.MONTH - a.MONTH);
+    const latest = sorted[0];
+    document.getElementById('statLatestNet').textContent = fmt(latest.NET_PAY);
+    document.getElementById('statLatestMonth').textContent = months[latest.MONTH] + ' ' + latest.YEAR;
+    document.getElementById('statTotal').textContent = payslipsData.length;
+    const currentFY = new Date().getFullYear();
+    const ytd = payslipsData
+      .filter(p => {
+        const y = Number(p.YEAR), m = Number(p.MONTH);
+        return (m >= 4 && y === currentFY) || (m < 4 && y === currentFY + 1);
+      })
+      .reduce((s, p) => s + Number(p.NET_PAY || 0), 0);
+    document.getElementById('statYTD').textContent = fmt(ytd);
+
+    tbody.innerHTML = sorted.map((p, i) => `
+      <tr>
+        <td><strong style="color:var(--text)">${months[p.MONTH] || p.MONTH} ${p.YEAR}</strong></td>
+        <td>${fmt(p.GROSS)}</td>
+        <td style="color:var(--error)">${fmt(p.TOTAL_DEDUCTIONS)}</td>
+        <td><strong style="color:var(--success)">${fmt(p.NET_PAY)}</strong></td>
+        <td><span class="badge badge-green">${p.STATUS || 'PROCESSED'}</span></td>
+        <td>
+          <button class="btn btn-ghost" onclick="viewPayslip(${i})">View</button>
+          <button class="btn btn-outline" style="font-size:12px;" onclick="printPayslip(${i})">Print</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function viewPayslip(idx) {
+    const p = payslipsData[idx];
+    const modal = document.getElementById('payslipModal');
+    document.getElementById('payslipModalBody').innerHTML = `
+      <div class="payslip-header">
+        <div>
+          <div class="payslip-company">SAPZCODES</div>
+          <div class="payslip-period">Salary Slip — ${months[p.MONTH] || p.MONTH} ${p.YEAR}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px">Employee: <strong style="color:var(--text)">${empName}</strong> &nbsp;|&nbsp; ID: ${empId}</div>
+        </div>
+        <div class="payslip-net">
+          <div class="label">Net Pay</div>
+          <div class="amount">${fmt(p.NET_PAY)}</div>
+        </div>
+      </div>
+      <div class="breakdown-grid">
+        <div class="breakdown-section">
+          <div class="breakdown-title">Earnings</div>
+          <div class="breakdown-row"><span class="lbl">Basic</span><span class="val">${fmt(p.BASIC)}</span></div>
+          <div class="breakdown-row"><span class="lbl">HRA</span><span class="val">${fmt(p.HRA)}</span></div>
+          <div class="breakdown-row"><span class="lbl">Special Allowance</span><span class="val">${fmt(p.SPECIAL_ALLOWANCE)}</span></div>
+          <div class="breakdown-row"><span class="lbl">Other Allowance</span><span class="val">${fmt(p.OTHER_ALLOWANCE)}</span></div>
+          <div class="breakdown-row total"><span class="lbl">Gross</span><span class="val">${fmt(p.GROSS)}</span></div>
+        </div>
+        <div class="breakdown-section">
+          <div class="breakdown-title">Deductions</div>
+          <div class="breakdown-row"><span class="lbl">LOP</span><span class="val" style="color:var(--error)">${fmt(p.LOP_DEDUCTION)}</span></div>
+          <div class="breakdown-row"><span class="lbl">PF (Employee)</span><span class="val" style="color:var(--error)">${fmt(p.PF_EMP)}</span></div>
+          <div class="breakdown-row"><span class="lbl">ESI (Employee)</span><span class="val" style="color:var(--error)">${fmt(p.ESI_EMP)}</span></div>
+          <div class="breakdown-row"><span class="lbl">Prof. Tax</span><span class="val" style="color:var(--error)">${fmt(p.PT)}</span></div>
+          <div class="breakdown-row"><span class="lbl">TDS</span><span class="val" style="color:var(--error)">${fmt(p.TDS)}</span></div>
+          <div class="breakdown-row total total-ded"><span class="lbl">Total Deductions</span><span class="val">${fmt(p.TOTAL_DEDUCTIONS)}</span></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding:14px 18px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:600;color:var(--text)">Net Pay</span>
+        <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--success)">${fmt(p.NET_PAY)}</span>
+      </div>
+      <div style="margin-top:16px;text-align:right;">
+        <button class="btn btn-primary" onclick="printPayslip(${idx})">🖨 Print Payslip</button>
+      </div>
+    `;
+    modal.classList.add('open');
+  }
+
+  function printPayslip(idx) {
+    const p = payslipsData[idx];
+    const w = window.open('', '_blank', 'width=700,height=900');
+    w.document.write(`
+      <html><head><title>Payslip - ${months[p.MONTH]} ${p.YEAR}</title>
+      <style>
+        body{font-family:Arial,sans-serif;padding:40px;color:#111;font-size:13px}
+        h2{margin:0 0 4px;font-size:20px}
+        .sub{color:#666;margin-bottom:20px;font-size:12px}
+        table{width:100%;border-collapse:collapse;margin-top:16px}
+        th{background:#f4f4f4;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+        td{padding:8px 12px;border-bottom:1px solid #eee}
+        .net{font-size:18px;font-weight:700;color:#16a34a;margin-top:16px;text-align:right}
+        @media print{button{display:none}}
+      </style></head><body>
+      <h2>SAPZCODES — Salary Slip</h2>
+      <div class="sub">${months[p.MONTH]} ${p.YEAR} &nbsp;|&nbsp; ${empName} &nbsp;|&nbsp; ${empId}</div>
+      <table>
+        <tr><th>Earnings</th><th>Amount</th><th>Deductions</th><th>Amount</th></tr>
+        <tr><td>Basic</td><td>${fmt(p.BASIC)}</td><td>LOP Deduction</td><td>${fmt(p.LOP_DEDUCTION)}</td></tr>
+        <tr><td>HRA</td><td>${fmt(p.HRA)}</td><td>PF (Employee)</td><td>${fmt(p.PF_EMP)}</td></tr>
+        <tr><td>Special Allowance</td><td>${fmt(p.SPECIAL_ALLOWANCE)}</td><td>ESI (Employee)</td><td>${fmt(p.ESI_EMP)}</td></tr>
+        <tr><td>Other Allowance</td><td>${fmt(p.OTHER_ALLOWANCE)}</td><td>Prof. Tax</td><td>${fmt(p.PT)}</td></tr>
+        <tr><td><strong>Gross</strong></td><td><strong>${fmt(p.GROSS)}</strong></td><td>TDS</td><td>${fmt(p.TDS)}</td></tr>
+        <tr><td></td><td></td><td><strong>Total Deductions</strong></td><td><strong>${fmt(p.TOTAL_DEDUCTIONS)}</strong></td></tr>
+      </table>
+      <div class="net">Net Pay: ${fmt(p.NET_PAY)}</div>
+      <p style="margin-top:40px;font-size:11px;color:#999">This is a system generated payslip. — SAPZCODES HR</p>
+      </body></html>
+    `);
+    w.document.close();
+    w.print();
+  }
+
+  // ── OFFER LETTER ──────────────────────────────────
+  async function loadOfferLetter() {
+    window._offerLoaded = true;
+    try {
+      const res  = await fetch(`${API_URL}?action=getMyOfferLetter&empId=${empId}&password=${encodeURIComponent(sessionStorage.getItem('emp_pass') || '')}`);
+      const data = await res.json();
+      document.getElementById('offerLoading').style.display = 'none';
+      if (data.success) {
+        document.getElementById('offerContent').textContent = data.content;
+      } else {
+        document.getElementById('offerContent').textContent = 'Could not load offer letter. Please contact hr@sapzcodes.com.';
+      }
+    } catch {
+      document.getElementById('offerContent').textContent = 'Connection failed. Please try again.';
+    }
+  }
+
+  function printOfferLetter() {
+    const content = document.getElementById('offerContent').textContent;
+    const w = window.open('', '_blank', 'width=800,height=1000');
+    w.document.write(`<html><head><title>Offer Letter</title><style>body{font-family:Arial,sans-serif;padding:60px;line-height:1.8;font-size:14px;color:#111}@media print{button{display:none}}</style></head><body><pre style="white-space:pre-wrap;font-family:Arial">${content}</pre></body></html>`);
+    w.document.close(); w.print();
+  }
+
+  function downloadOfferLetter() {
+    const content = document.getElementById('offerContent').textContent;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `OfferLetter_${empId}.txt`;
+    a.click();
+  }
+
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function fmt(val) {
+    const n = Number(val) || 0;
+    return '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // Init
+  loadPayslips();
+</script>
+</body>
+</html>
