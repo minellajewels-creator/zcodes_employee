@@ -31,11 +31,11 @@
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
     Offer Letter
   </a>
-  <a class="nav-item" onclick="window.location.href='declarations.html'" href="#">
+  <a class="nav-item" onclick="window.location.href='declarations'" href="#">
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
     Tax Declarations
   </a>
-  <a class="nav-item" onclick="window.location.href='emp-reimbursements.html'" href="#">
+  <a class="nav-item" onclick="window.location.href='emp-reimbursements'" href="#">
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
     Reimbursements
   </a>
@@ -144,7 +144,7 @@
   const empId   = sessionStorage.getItem('emp_id');
   const empName = sessionStorage.getItem('emp_name');
   const empDesig= sessionStorage.getItem('emp_desig');
-  if (!empId) window.location.href = 'emp-login.html';
+  if (!empId) window.location.href = 'index';
 
   // Set sidebar info
   document.getElementById('sidebarName').textContent = empName || '—';
@@ -165,7 +165,7 @@
 
   function logout() {
     sessionStorage.clear();
-    window.location.href = 'emp-login.html';
+    window.location.href = 'index';
   }
 
   // ── PAYSLIPS ──────────────────────────────────────
